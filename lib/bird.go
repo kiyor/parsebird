@@ -6,7 +6,7 @@
 
 * Creation Date : 04-04-2014
 
-* Last Modified : Fri 04 Apr 2014 07:52:36 PM UTC
+* Last Modified : Thu 22 May 2014 07:10:58 PM UTC
 
 * Created By : Kiyor
 
@@ -32,10 +32,10 @@ type Route struct {
 
 var (
 	reProtocol     = regexp.MustCompile(`protocol static (.*) {`)
-	reEdge         = regexp.MustCompile(`Edge(\d\d)`)
+	reEdge         = regexp.MustCompile(`edge(\d\d)`)
 	reRoute        = regexp.MustCompile(`route (.*) reject;`)
 	reRouteComment = regexp.MustCompile(`#.*route (.*) reject;`)
-	reEndEdge      = regexp.MustCompile(`EndEdge`)
+	reEndEdge      = regexp.MustCompile(`endedge`)
 )
 
 func chkErr(err error) {
@@ -62,8 +62,8 @@ func ParseConf(f string) Bird {
 			}
 			endEdge = false
 		}
-		if reEdge.MatchString(v) {
-			edgeKey = "edge" + reEdge.FindStringSubmatch(v)[1]
+		if reEdge.MatchString(strings.ToLower(v)) {
+			edgeKey = "edge" + reEdge.FindStringSubmatch(strings.ToLower(v))[1]
 			rs = []Route{}
 			bird[providerKey][edgeKey] = rs
 		}
@@ -85,7 +85,7 @@ func ParseConf(f string) Bird {
 			rs = RemoveDup(rs)
 			bird[providerKey][edgeKey] = rs
 		}
-		if reEndEdge.MatchString(v) {
+		if reEndEdge.MatchString(strings.ToLower(v)) {
 			endEdge = true
 		}
 	}
